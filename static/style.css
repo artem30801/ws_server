@@ -1,0 +1,33 @@
+/* .ui.table thead tr:first-child>th {
+    position: sticky !important;
+    top: 0;
+    z-index: 2;
+}
+
+
+
+th, tr, thead {
+    box-sizing: border-box;
+} */
+
+table {
+    /* Not required only for visualizing */
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table thead tr th {
+    /* Important */
+    position: sticky !important;
+    z-index: 2;
+    top: 0;
+}
+
+td {
+    /* Not required only for visualizing */
+    padding: 1em;
+}
+
+.ui.table {
+    border-top: none !important;
+}

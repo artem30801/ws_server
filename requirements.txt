@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+websockets
+jinja2
+
+requests
