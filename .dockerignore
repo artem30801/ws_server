@@ -1,3 +1,4 @@
 auth.json
 loop_sender.py
 sender.py
+docker-compose.yml
