@@ -74,7 +74,7 @@ function on_detected(data) {
 }
 
 function on_total(data) {
-    var section = document.querySelector(`td[section_id="${data['section']}"]`)
+    var section = document.querySelector(`span[section_id="${data['section']}"]`)
     console.log(data)
     console.log(section)
     section.innerHTML = data['count']
