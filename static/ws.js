@@ -88,16 +88,46 @@ function connect() {
         }
     };
 
+    ws.onopen = function (e) {
+        console.log('Socket connected');
+        $('body')
+            .toast({
+                class: 'success',
+                title: 'Socket connected.',
+            })
+            ;
+
+    }
+
     ws.onclose = function (e) {
         console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
         setTimeout(function () {
             connect();
-        }, 1000);
+        }, 3000);
+
+        $('body')
+            .toast({
+                displayTime: '3000',
+                showProgress: 'bottom',
+                classProgress: 'blue',
+                class: 'error',
+                title: 'Socket is closed.',
+                message: 'Reconnect will be attempted in <span class="ui label">3</span> seconds.'
+            })
+            ;
     };
 
     ws.onerror = function (err) {
         console.error('Socket encountered error: ', err.message, 'Closing socket');
         ws.close();
+
+        $('body')
+            .toast({
+                class: 'error',
+                title: 'Socket encountered error:',
+                message: err.message ?? 'Can not connect.'
+            })
+            ;
     };
 }
 
