@@ -86,9 +86,11 @@ function connect() {
     ws.onmessage = function (event) {
         var data = JSON.parse(event.data)
         var type = data['type']
+        var sender = data['sender']
         var content = data['content']
 
         if (type == 'detected') {
+            content['sender'] = sender
             on_detected(content)
         }
         else if (type == 'total') {

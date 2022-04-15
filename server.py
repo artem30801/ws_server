@@ -1,6 +1,6 @@
 import json
 import secrets
-from typing import List
+from typing import List, Optional
 
 from fastapi import Depends, FastAPI, Request, WebSocket, WebSocketDisconnect, HTTPException, status
 from fastapi.responses import HTMLResponse
@@ -17,24 +17,22 @@ templates = Jinja2Templates(directory="templates")
 security = HTTPBasic()
 
 with open("auth.json", "r") as f:
-    all_credentials = json.load(f)
+    all_credentials: dict = json.load(f)
 
 
 def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
-    for username, password in all_credentials:
-        correct_username = secrets.compare_digest(credentials.username, username)
+    password = all_credentials.get(credentials.username)
+    if password:
         correct_password = secrets.compare_digest(credentials.password, password)
 
-        if correct_username and correct_password:
-            break
+        if correct_password:
+            return credentials.username
 
-    else:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Basic"},
-        )
-    return credentials.username
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Incorrect username or password",
+        headers={"WWW-Authenticate": "Basic"},
+    )
 
 
 class ConnectionManager:
@@ -48,8 +46,9 @@ class ConnectionManager:
     def disconnect(self, websocket: WebSocket):
         self.connections.remove(websocket)
 
-    async def broadcast(self, message_type, content: dict):
-        message = dict(type=message_type, content=content)
+    async def broadcast(self, message_type, sender: str = "Anonymous", content: Optional[dict] = None):
+        content = content or dict()
+        message = dict(type=message_type, sender=sender, content=content)
         living_connections = []
         while len(self.connections) > 0:
             # Looping like this is necessary in case a disconnection is handled
@@ -68,7 +67,9 @@ manager = ConnectionManager()
 
 @app.get("/", response_class=HTMLResponse)
 async def get(request: Request):
-    context = {'request': request}
+    context = {"request": request,
+               "users": list(all_credentials.keys())
+               }
     return templates.TemplateResponse("display.html", context)
 
 
@@ -82,19 +83,18 @@ class DetectedReport(BaseModel):
 @app.post("/storage/report/detected")
 async def detected_report(report: DetectedReport, username: str = Depends(get_current_username)):
     response = report.dict()
-    response["sender"] = username
-    await manager.broadcast("detected", response)
+    await manager.broadcast("detected", username, response)
 
 
 @app.post("/storage/report/total/{section}")
 async def total_report(section: int, count: int, username: str = Depends(get_current_username)):
     response = {"section": section, "count": count}
-    await manager.broadcast("total", response)
+    await manager.broadcast("total", username, response)
 
 
-@app.post("/storage/report/total/clear")
+@app.post("/storage/report/clear")
 async def total_clear(username: str = Depends(get_current_username)):
-    await manager.broadcast("total_clear", {})
+    await manager.broadcast("clear", username)
 
 
 @app.websocket("/ws/connect")
@@ -105,4 +105,3 @@ async def websocket_endpoint(websocket: WebSocket):
             data = await websocket.receive_text()
     except WebSocketDisconnect:
         manager.disconnect(websocket)
-    print("DISCONNECT")
