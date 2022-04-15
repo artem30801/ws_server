@@ -70,6 +70,34 @@ function on_total(data) {
     section.innerHTML = data['count']
 }
 
+function detected_clear() {
+    var messages = document.getElementById('messages')
+    messages.innerHTML = ''
+}
+
+function total_clear() {
+    var sections = document.querySelectorAll('[section_id]')
+    for (const section of sections) {
+        section.innerHTML = '0'
+    }
+}
+
+function clear_all(reason) {
+    console.log("Cleared")
+    detected_clear()
+    total_clear()
+
+    $('body')
+        .toast({
+            duration: 'auto',
+            class: 'info',
+            title: 'Cleared all data',
+            message: reason
+        })
+        ;
+}
+
+
 function connect() {
     var ws = new WebSocket('ws://' + location.host + '/ws/connect');
 
@@ -85,6 +113,9 @@ function connect() {
         }
         else if (type == 'total') {
             on_total(content)
+        }
+        else if (type == 'clear') {
+            clear_all(`By request from <span class="ui label">${sender}</span>`)
         }
     };
 
