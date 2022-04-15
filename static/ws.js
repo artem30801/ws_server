@@ -15,8 +15,6 @@ function on_detected(data) {
     item.appendChild(document.createTextNode(data['item']))
     message.appendChild(item)
 
-    var coordinates = document.createElement('td')
-    // coordinates.appendChild(document.createTextNode(data['coordinates']))
     var x = document.createElement('td')
     x.classList.add('ui', 'red', 'text')
     x.appendChild(document.createTextNode(data['coordinates'][0] + '    '))
@@ -26,12 +24,6 @@ function on_detected(data) {
     var z = document.createElement('td')
     z.classList.add('ui', 'blue', 'text')
     z.appendChild(document.createTextNode(data['coordinates'][2]))
-
-    // coordinates.appendChild(x)
-    // coordinates.appendChild(y)
-    // coordinates.appendChild(z)
-
-    // message.appendChild(coordinates)
 
     message.appendChild(x)
     message.appendChild(y)
@@ -74,9 +66,7 @@ function on_detected(data) {
 }
 
 function on_total(data) {
-    var section = document.querySelector(`span[section_id="${data['section']}"]`)
-    console.log(data)
-    console.log(section)
+    var section = document.querySelector(`[section_id="${data['section']}"]`)
     section.innerHTML = data['count']
 }
 
