@@ -58,16 +58,24 @@ function on_detected(data) {
     message.appendChild(section)
 
     messages.appendChild(message)
+    $(message).transition('fade up in', '700ms');
 
     var container = document.getElementById("container");
-    // container.scrollTop = container.scrollHeight;
     container.scroll({ top: container.scrollHeight, behavior: 'smooth' })
 
 }
 
 function on_total(data) {
-    var section = document.querySelector(`[section_id="${data['section']}"]`)
-    section.innerHTML = data['count']
+    $(`[section_id="${data['section']}"]`)
+        .transition('fade down out')
+        .delay(200)
+        .queue(function (n) {
+            $(this).html(data['count']);
+            n();
+        })
+        .delay(200)
+        .transition('fade up in')
+        ;
 }
 
 function detected_clear() {
@@ -89,7 +97,7 @@ function clear_all(reason) {
 
     $('body')
         .toast({
-            duration: 'auto',
+            displayTime: 'auto',
             class: 'info',
             title: 'Cleared all data',
             message: reason
@@ -106,6 +114,20 @@ function connect() {
         var type = data['type']
         var sender = data['sender']
         var content = data['content']
+
+        var sender_filter = document.getElementById('sender_filter').value
+        if (sender_filter != '' && sender_filter != sender) {
+            $('body')
+                .toast({
+                    // displayTime: 'auto',
+                    class: 'warning',
+                    title: 'Filtered message out',
+                    message: `Dropped <span class="ui label">${type}</span> message by <span class="ui label">${sender}</span>`
+                })
+                ;
+
+            return
+        }
 
         if (type == 'detected') {
             content['sender'] = sender

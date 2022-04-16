@@ -9,79 +9,127 @@
     <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.8/dist/semantic.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <link rel="icon" type="image/png" href="/static/logo.png">
+
 </head>
 
 <body>
     <div class="ui container">
-        <div class="ui two column grid">
-            <div class="row">
+        <div class="ui two column middle aligned stackable grid">
+            <div class="row" style="margin-top: 1rem;">
                 <div class="ten wide column">
-                    <h1 class="ui dividing header">
-                        <img class="ui image" src="/static/logo.png">
-                        <div class="content">
-                            WorldSkills Warehouse Monitoring LTD.
-                            <div class="sub header">Мониторим склады и оценки</div>
+                    <div class="row">
+                        <h1 class="ui dividing header">
+                            <img class="ui image" src="/static/logo.png">
+                            <div class="content">
+                                WS Warehouse Monitor LTD.
+                                <div class="sub header">Мониторим ваши склады быстро и качественно</div>
+                            </div>
+                        </h1>
+                    </div>
+                    <div class="row" style="padding-top: 0.5rem;">
+                        <div class="ui clearable selection dropdown">
+                            <i class="filter icon"></i>
+                            <input type="hidden" name="sender" id="sender_filter" value="">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Select sender</div>
+                            <div class="menu">
+                                <div class="header">
+                                    <i class="user icon"></i>
+                                    Filter by sender
+                                </div>
+                                <div class="divider"></div>
+                                {% for user in users %}
+                                <div class="item" data-value="{{ user }}">{{ user }}</div>
+                                {%- endfor %}
+                            </div>
                         </div>
-                    </h1>
+                        <div class="ui right labeled icon button" onclick="clear_all()">
+                            <i class="undo icon"></i>
+                            Clear data
+                        </div>
+                    </div>
                 </div>
-                <div class="six wide column">
-                    <table class="ui celled table">
-                        <tbody>
-                            <tr>
-                                <td class="yellow" style="position: relative">
-                                    <span section_id="2">0</span>
-                                    <div style="position: absolute; right: 2px; top: 0; font-style: italic;">Section 2</div>
-                                </td>
-                                <td class="purple" style="position: relative">
-                                    <span section_id="4">0</span>
-                                    <div style="position: absolute; right: 2px; top: 0; font-style: italic;">Section 4</div>
-                                </td>
-                                <td class="teal" style="position: relative">
-                                    <span section_id="6">0</span>
-                                    <div style="position: absolute; right: 2px; top: 0; font-style: italic;">Section 6</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="red" style="position: relative">
-                                    <span section_id="1">0</span>
-                                    <div style="position: absolute; right: 2px; top: 0; font-style: italic;">Section 1</div>
-                                </td>
-                                <td class="blue" style="position: relative">
-                                    <span section_id="3">0</span>
-                                    <div style="position: absolute; right: 2px; top: 0; font-style: italic;">Section 3</div>
-                                </td>
-                                <td class="green" style="position: relative">
-                                    <span section_id="5">0</span>
-                                    <div style="position: absolute; right: 2px; top: 0; font-style: italic;">Section 5</div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="six wide column" style="height: 100%;">
+                    <div class="table-border" style="height: 100%;">
+                        <table class="ui fixed celled table"
+                            style="height: 100%; margin-left: -0.5px; width: calc(0.5px + 100%);">
+                            <tbody>
+                                <tr>
+                                    <td class="yellow section cell" style="position: relative">
+                                        <div section_id="2" class="section number">0</div>
+                                        <div class="section label">Section 2</div>
+                                    </td>
+                                    <td class="purple" style="position: relative">
+                                        <div section_id="4" class="section number">0</div>
+                                        <div class="section label">Section 4
+                                        </div>
+                                    </td>
+                                    <td class="teal" style="position: relative">
+                                        <div section_id="6" class="section number">0</div>
+                                        <div class="section label">Section 6
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="red" style="position: relative">
+                                        <div section_id="1" class="section number">0</div>
+                                        <div class="section label">Section 1
+                                        </div>
+                                    </td>
+                                    <td class="blue" style="position: relative">
+                                        <div section_id="3" class="section number">0</div>
+                                        <div class="section label">Section 3
+                                        </div>
+                                    </td>
+                                    <td class="green" style="position: relative">
+                                        <div section_id="5" class="section number">0</div>
+                                        <div class="section label">Section 5
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-            <!-- <button onsubmit="clearMessages(event)">Reset</button> -->
-            <!--        <ul id='messages'>-->
-            <!--        </ul>-->
-            <div class="sixteen wide column">
-                <div id="container" style="overflow: auto; height:400px;">
-                    <table class="ui selectable celled blue table">
-                        <thead>
-                            <tr>
-                                <th>Sender</th>
-                                <th>Timestamp</th>
-                                <th>Item</th>
-                                <th colspan="3">Coordinates</th>
-                                <th>Section</th>
-                            </tr>
-                        </thead>
-                        <tbody id="messages" style="height:300px; overflow-y: scroll;">
-                        </tbody>
-                    </table>
+
+
+            <div class="row" style="padding-top: 0rem;">
+                <div class="sixteen wide column">
+                    <div id="container" class="table-container">
+                        <table class="ui selectable celled table message-table">
+                            <thead>
+                                <tr>
+                                    <th>Sender</th>
+                                    <th>Timestamp</th>
+                                    <th>Item</th>
+                                    <th colspan="3">
+                                        Coordinates:
+                                        <table style="width: 100%; margin-top: -8px; margin-bottom: -8px;">
+                                            <tr>
+                                                <td><span class="ui red text">x</span></td>
+                                                <td><span class="ui green text">y</span></td>
+                                                <td><span class="ui blue text">z</span></td>
+                                            </tr>
+                                        </table>
+                                    </th>
+                                    <th>Section</th>
+                                </tr>
+                            </thead>
+                            <tbody id="messages">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <script src="/static/ws.js"></script>
+    <script>
+        $('.ui.dropdown')
+            .dropdown();
+    </script>
 </body>
 
 </html>
