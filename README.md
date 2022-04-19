@@ -4,6 +4,7 @@ Intended for use in "warehouse monitoring" module in "Areal Robotics" WorldSkill
 ![image](https://user-images.githubusercontent.com/38689676/164006424-eedd9f18-f6dd-4687-bd42-332ca58ff386.png)
 ![image](https://user-images.githubusercontent.com/38689676/164007070-58643469-8b79-468b-898e-83b6dbc730cf.png)
 
+[Demonstation video](https://youtu.be/LIdvWNz821E?t=26393)
 
 ## Launch (for organisation team)
 Launch on computer (or server) with satic IP or IP avialible from all drones in local network
